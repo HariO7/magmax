@@ -37,4 +37,17 @@ class ArticleViewSet(viewsets.ModelViewSet):
             # If not authenticated, author must be provided in the request data
             # The serializer will validate it
             serializer.save()
+    
+    def destroy(self, request, *args, **kwargs):
+        """Delete an article"""
+        instance = self.get_object()
+        article_id = instance.id
+        article_title = instance.title
+        self.perform_destroy(instance)
+        return Response(
+            {
+                "message": f"Article '{article_title}' (ID: {article_id}) has been deleted successfully."
+            },
+            status=status.HTTP_200_OK
+        )
 
