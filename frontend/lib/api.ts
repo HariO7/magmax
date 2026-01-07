@@ -17,6 +17,7 @@ async function fetchApi<T>(
   
   const response = await fetch(url, {
     ...options,
+    cache: 'no-store', 
     headers: {
       'Content-Type': 'application/json',
       ...options?.headers,
@@ -47,8 +48,13 @@ export const api = {
   },
 
   // Articles
-  async getArticles(page: number = 1): Promise<ArticleListResponse> {
-    return fetchApi<ArticleListResponse>(`/articles/?page=${page}`);
+  async getArticles(page: number = 1, published?: boolean): Promise<ArticleListResponse> {
+    const params = new URLSearchParams();
+    params.append('page', page.toString());
+    if (published !== undefined) {
+      params.append('published', published.toString());
+    }
+    return fetchApi<ArticleListResponse>(`/articles/?${params.toString()}`);
   },
 
   async getArticle(id: number): Promise<Article> {

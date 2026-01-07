@@ -1,6 +1,6 @@
-# Teest Frontend
+# Frontend
 
-A modern Next.js client-side application for the Teest article platform.
+A modern Next.js client-side application for the article platform.
 
 ## Features
 

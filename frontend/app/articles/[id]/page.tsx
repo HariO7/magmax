@@ -4,6 +4,10 @@ import { Article } from '@/types/article';
 import { getImageUrl } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
+import PublishButton from '@/components/PublishButton';
+
+// Disable static generation and caching
+export const dynamic = 'force-dynamic';
 
 interface ArticlePageProps {
   params: {
@@ -84,6 +88,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 </time>
               </div>
             </div>
+
+            <PublishButton article={article} />
 
             {article.tags && article.tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-6">

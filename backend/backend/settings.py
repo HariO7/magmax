@@ -29,6 +29,7 @@ INSTALLED_APPS = [
 
     # DRF
     'rest_framework',
+    'corsheaders',
 
     # Local
     'core',
@@ -36,6 +37,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
    'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # CORS middleware should be as high as possible
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -162,3 +164,38 @@ REST_FRAMEWORK = {
 }
 
 CMS_CONFIRM_VERSION4 = True
+
+# CORS settings
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+# Allow all origins in development (remove in production)
+CORS_ALLOW_ALL_ORIGINS = DEBUG
+
+# Allow credentials
+CORS_ALLOW_CREDENTIALS = True
+
+# Allowed methods
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+# Allowed headers
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
