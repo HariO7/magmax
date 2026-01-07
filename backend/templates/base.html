@@ -1,0 +1,13 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% page_attribute "title" %}</title>
+    {% render_block "css" %}
+</head>
+<body>
+    {% cms_toolbar %}
+    {% placeholder "content" %}
+    {% render_block "js" %}
+</body>
+</html>
