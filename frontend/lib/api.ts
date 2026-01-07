@@ -48,11 +48,18 @@ export const api = {
   },
 
   // Articles
-  async getArticles(page: number = 1, published?: boolean): Promise<ArticleListResponse> {
+  async getArticles(
+    page: number = 1,
+    published?: boolean,
+    search?: string
+  ): Promise<ArticleListResponse> {
     const params = new URLSearchParams();
     params.append('page', page.toString());
     if (published !== undefined) {
       params.append('published', published.toString());
+    }
+    if (search && search.trim()) {
+      params.append('search', search.trim());
     }
     return fetchApi<ArticleListResponse>(`/articles/?${params.toString()}`);
   },

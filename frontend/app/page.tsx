@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import ArticleCard from '@/components/ArticleCard';
+import SearchBar from '@/components/SearchBar';
 import { Article } from '@/types/article';
+import { Suspense } from 'react';
 
 // Disable static generation and caching
 export const dynamic = 'force-dynamic';
@@ -9,7 +11,16 @@ export const dynamic = 'force-dynamic';
 interface HomeProps {
   searchParams: {
     published?: string;
+    search?: string;
   };
+}
+
+function SearchBarWrapper() {
+  return (
+    <Suspense fallback={<div className="w-full max-w-2xl mx-auto mb-8 h-14" />}>
+      <SearchBar />
+    </Suspense>
+  );
 }
 
 export default async function Home({ searchParams }: HomeProps) {
@@ -20,9 +31,12 @@ export default async function Home({ searchParams }: HomeProps) {
   const showPublished = searchParams.published === undefined 
     ? true 
     : searchParams.published === 'true';
+  
+  // Get search query
+  const searchQuery = searchParams.search || undefined;
 
   try {
-    const response = await api.getArticles(1, showPublished);
+    const response = await api.getArticles(1, showPublished, searchQuery);
     articles = response.results;
   } catch (err) {
     error = err instanceof Error ? err.message : 'Failed to load articles';
@@ -39,9 +53,9 @@ export default async function Home({ searchParams }: HomeProps) {
           <p className="text-xl text-gray-600 mb-6">
             Discover and read amazing articles
           </p>
-          <div className="flex justify-center gap-4">
+          <div className="flex justify-center gap-4 mb-6">
             <Link
-              href="/"
+              href={searchQuery ? `/?search=${encodeURIComponent(searchQuery)}` : '/'}
               className={`px-6 py-3 rounded-lg font-semibold transition-colors ${
                 showPublished
                   ? 'bg-blue-600 text-white hover:bg-blue-700'
@@ -51,7 +65,7 @@ export default async function Home({ searchParams }: HomeProps) {
               Published Articles
             </Link>
             <Link
-              href="/?published=false"
+              href={searchQuery ? `/?published=false&search=${encodeURIComponent(searchQuery)}` : '/?published=false'}
               className={`px-6 py-3 rounded-lg font-semibold transition-colors ${
                 !showPublished
                   ? 'bg-blue-600 text-white hover:bg-blue-700'
@@ -62,6 +76,8 @@ export default async function Home({ searchParams }: HomeProps) {
             </Link>
           </div>
         </header>
+
+        <SearchBarWrapper />
 
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-6">
@@ -79,10 +95,14 @@ export default async function Home({ searchParams }: HomeProps) {
         {!error && articles.length === 0 && (
           <div className="text-center py-12">
             <p className="text-gray-500 text-lg">
-              No {showPublished ? 'published' : 'unpublished'} articles found.
+              {searchQuery
+                ? `No ${showPublished ? 'published' : 'unpublished'} articles found matching "${searchQuery}".`
+                : `No ${showPublished ? 'published' : 'unpublished'} articles found.`}
             </p>
             <p className="text-gray-400 text-sm mt-2">
-              {showPublished 
+              {searchQuery
+                ? 'Try a different search term or clear the search.'
+                : showPublished
                 ? 'Create some articles in the Django admin panel.'
                 : 'All articles are currently published.'}
             </p>
